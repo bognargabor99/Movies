@@ -1,5 +1,6 @@
 package com.applion.testtask.movies.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -42,6 +45,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.applion.testtask.movies.Config
 import com.applion.testtask.movies.R
+import com.applion.testtask.movies.extensions.isScrollingUp
 import com.applion.testtask.movies.network.model.MovieResult
 import com.applion.testtask.movies.ui.screen.model.MovieListUiState
 import com.applion.testtask.movies.ui.screen.util.InfiniteCircularProgressBar
@@ -53,24 +57,26 @@ fun MovieListScreen(
     movieListViewModel: MovieListViewModel = hiltViewModel(),
     onMovieClick: (MovieResult) -> Unit
 ) {
+    val lazyListState = rememberLazyListState()
+
     Column(modifier = modifier) {
-        MovieListTopAppBar(movieListViewModel.titleFilter, movieListViewModel::onTitleFilterChange)
+        MovieListTopAppBar(movieListViewModel.titleFilter, movieListViewModel::onTitleFilterChange, lazyListState.isScrollingUp())
         when (movieListViewModel.movieListState) {
             is MovieListUiState.Error -> { ErrorScreen() }
             is MovieListUiState.Loading -> { LoadingScreen() }
-            is MovieListUiState.Success -> { MovieList(movieListViewModel.filteredMovies, onMovieClick) }
+            is MovieListUiState.Success -> { MovieList(lazyListState, movieListViewModel.filteredMovies, onMovieClick) }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieListTopAppBar(titleFilter: String, onTitleFilterChange: (String) -> Unit) {
+fun MovieListTopAppBar(titleFilter: String, onTitleFilterChange: (String) -> Unit, extended: Boolean) {
     Column {
-        CenterAlignedTopAppBar(
-            title = { Text(text = stringResource(R.string.movies), fontWeight = FontWeight.Bold) },
-        )
-        MovieFilter(titleFilter, onTitleFilterChange)
+        CenterAlignedTopAppBar(title = { Text(text = stringResource(R.string.movies), fontWeight = FontWeight.Bold) })
+        AnimatedVisibility(visible = extended) {
+            MovieFilter(titleFilter, onTitleFilterChange)
+        }
     }
 }
 
@@ -182,11 +188,13 @@ fun LoadingScreen() {
 
 @Composable
 fun MovieList(
+    lazyListState: LazyListState,
     movies: List<MovieResult>,
     onMovieClick: (MovieResult) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(8.dp),
+        state = lazyListState
     ) {
         items(movies.size) {
             MovieRowCard(movie = movies[it], onMovieClick = onMovieClick)
