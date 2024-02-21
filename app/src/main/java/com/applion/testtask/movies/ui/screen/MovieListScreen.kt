@@ -1,5 +1,7 @@
 package com.applion.testtask.movies.ui.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,6 +25,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,20 +52,41 @@ fun MovieListScreen(
     movieListViewModel: MovieListViewModel = hiltViewModel()
 ) {
     Column(modifier = modifier) {
-        MovieListTopAppBar()
+        MovieListTopAppBar(movieListViewModel.titleFilter, movieListViewModel::onTitleFilterChange)
         when (movieListViewModel.movieListState) {
             is MovieListUiState.Error -> { ErrorScreen() }
             is MovieListUiState.Loading -> { LoadingScreen() }
-            is MovieListUiState.Success -> { MovieList((movieListViewModel.movieListState as MovieListUiState.Success).movies) }
+            is MovieListUiState.Success -> { MovieList(movieListViewModel.filteredMovies) }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieListTopAppBar() {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(R.string.movies), fontWeight = FontWeight.Bold) },
+fun MovieListTopAppBar(titleFilter: String, onTitleFilterChange: (String) -> Unit) {
+    Column {
+        CenterAlignedTopAppBar(
+            title = { Text(text = stringResource(R.string.movies), fontWeight = FontWeight.Bold) },
+        )
+        MovieFilter(titleFilter, onTitleFilterChange)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MovieFilter(titleFilter: String, onTitleFilterChange: (String) -> Unit) {
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .border(1.dp, Color.Gray, RoundedCornerShape(20.dp))
+            .background(Color.LightGray.copy(alpha = 0.35f), RoundedCornerShape(20.dp)),
+        value = titleFilter,
+        onValueChange = onTitleFilterChange,
+        singleLine = true,
+        placeholder = { Text(stringResource(R.string.search)) },
+        shape = RoundedCornerShape(20.dp),
+        leadingIcon = { Icon(imageVector = Icons.Filled.Search, contentDescription = null) }
     )
 }
 
