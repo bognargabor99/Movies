@@ -1,0 +1,41 @@
+package com.applion.testtask.movies.ui.screen.util
+
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+
+@Composable
+fun InfiniteCircularProgressBar() {
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val progress by infiniteTransition.animateFloat(
+        initialValue = 0.1f,
+        targetValue = 0.9f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 1000
+            },
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+    val rotationDegrees by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 1000
+            },
+            repeatMode = RepeatMode.Restart
+        ), label = ""
+    )
+    CircularProgressIndicator(
+        modifier = Modifier.rotate(rotationDegrees),
+        progress = progress
+    )
+}
