@@ -2,6 +2,7 @@ package com.applion.testtask.movies.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,14 +50,15 @@ import com.applion.testtask.movies.viewmodel.MovieListViewModel
 @Composable
 fun MovieListScreen(
     modifier: Modifier = Modifier,
-    movieListViewModel: MovieListViewModel = hiltViewModel()
+    movieListViewModel: MovieListViewModel = hiltViewModel(),
+    onMovieClick: (MovieResult) -> Unit
 ) {
     Column(modifier = modifier) {
         MovieListTopAppBar(movieListViewModel.titleFilter, movieListViewModel::onTitleFilterChange)
         when (movieListViewModel.movieListState) {
             is MovieListUiState.Error -> { ErrorScreen() }
             is MovieListUiState.Loading -> { LoadingScreen() }
-            is MovieListUiState.Success -> { MovieList(movieListViewModel.filteredMovies) }
+            is MovieListUiState.Success -> { MovieList(movieListViewModel.filteredMovies, onMovieClick) }
         }
     }
 }
@@ -92,16 +94,18 @@ fun MovieFilter(titleFilter: String, onTitleFilterChange: (String) -> Unit) {
 
 @Composable
 fun MovieRowCard(
-    movie: MovieResult
+    movie: MovieResult,
+    onMovieClick: (MovieResult) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp,),
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable { onMovieClick(movie) }
     ) {
         Row(
             modifier = Modifier
@@ -177,12 +181,15 @@ fun LoadingScreen() {
 
 
 @Composable
-fun MovieList(movies: List<MovieResult>) {
+fun MovieList(
+    movies: List<MovieResult>,
+    onMovieClick: (MovieResult) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.padding(8.dp)
     ) {
         items(movies.size) {
-            MovieRowCard(movie = movies[it])
+            MovieRowCard(movie = movies[it], onMovieClick = onMovieClick)
         }
     }
 }
