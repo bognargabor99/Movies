@@ -30,30 +30,3 @@ data class MovieDetailsResult(
     @SerialName("vote_average") val voteAverage: Double,
     @SerialName("vote_count") val voteCount: Long,
 )
-
-@Serializable
-data class Genre(
-    val id: Long,
-    val name: String,
-)
-
-@Serializable
-data class ProductionCompany(
-    val id: Long,
-    @SerialName("logo_path") val logoPath: String,
-    val name: String,
-    @SerialName("origin_country") val originCountry: String,
-)
-
-@Serializable
-data class ProductionCountry(
-    @SerialName("iso_3166_1") val iso31661: String,
-    val name: String,
-)
-
-@Serializable
-data class SpokenLanguage(
-    @SerialName("english_name") val englishName: String,
-    @SerialName("iso_639_1") val iso6391: String,
-    val name: String,
-)
