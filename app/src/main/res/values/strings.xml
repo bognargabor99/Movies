@@ -2,6 +2,9 @@
     <string name="app_name">Movies</string>
     <string name="movies">Movies</string>
     <string name="something_went_wrong">Something went wrong. Check your network connection.</string>
-    <string name="loading">Fetching movies</string>
+    <string name="loading">Fetching data…</string>
     <string name="search">Search</string>
+    <string name="status">Status</string>
+    <string name="popularity">Popularity</string>
+    <string name="language">Language</string>
 </resources>

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProductionCompany(
     val id: Long,
-    @SerialName("logo_path") val logoPath: String,
+    @SerialName("logo_path") val logoPath: String?,
     val name: String,
     @SerialName("origin_country") val originCountry: String,
 )

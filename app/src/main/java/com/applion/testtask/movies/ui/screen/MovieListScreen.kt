@@ -5,16 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -48,7 +45,8 @@ import com.applion.testtask.movies.R
 import com.applion.testtask.movies.extensions.isScrollingUp
 import com.applion.testtask.movies.network.model.MovieResult
 import com.applion.testtask.movies.ui.screen.model.MovieListUiState
-import com.applion.testtask.movies.ui.screen.util.InfiniteCircularProgressBar
+import com.applion.testtask.movies.ui.screen.util.ErrorScreen
+import com.applion.testtask.movies.ui.screen.util.LoadingScreen
 import com.applion.testtask.movies.viewmodel.MovieListViewModel
 
 @Composable
@@ -138,53 +136,19 @@ fun MovieRowCard(
                     fontWeight = FontWeight.Bold
                 )
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(imageVector = Icons.Filled.Star, contentDescription = null, tint = Color(180, 165, 0))
-                    Text(movie.voteAverage.toString(), color = Color(180, 165, 0))
+                    Icon(imageVector = Icons.Filled.Star, contentDescription = null, tint = Color(200, 165, 0))
+                    Text(movie.voteAverage.toString().take(3), color = Color(200, 165, 0))
                     Icon(imageVector = Icons.Filled.Favorite, contentDescription = null, tint = Color.Red)
-                    Text(movie.voteCount.toString(), color = Color.Red)
+                    Text(movie.popularity.toString(), color = Color.Red)
                 }
                 Text(text = movie.overview, maxLines = 3, color = Color.Gray)
             }
         }
     }
 }
-
-@Composable
-private fun ScreenContent(
-    content: @Composable () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(),
-        contentAlignment = Alignment.TopStart
-    ) {
-        content()
-    }
-}
-
-@Composable
-fun ErrorScreen() {
-    ScreenContent {
-        Text(text = stringResource(R.string.something_went_wrong))
-    }
-}
-
-@Composable
-fun LoadingScreen() {
-    ScreenContent {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            InfiniteCircularProgressBar()
-            Text(text = stringResource(R.string.loading))
-        }
-    }
-}
-
-
 
 @Composable
 fun MovieList(
