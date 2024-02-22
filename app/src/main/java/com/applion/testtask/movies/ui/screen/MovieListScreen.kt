@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -85,13 +86,13 @@ fun MovieFilter(titleFilter: String, onTitleFilterChange: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .border(1.dp, Color.Gray, RoundedCornerShape(20.dp))
-            .background(Color.LightGray.copy(alpha = 0.35f), RoundedCornerShape(20.dp)),
+            .border(Dp.Hairline, Color.LightGray.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
+            .background(Color.LightGray.copy(alpha = 0.35f), RoundedCornerShape(8.dp)),
         value = titleFilter,
         onValueChange = onTitleFilterChange,
         singleLine = true,
         placeholder = { Text(stringResource(R.string.search)) },
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(8.dp),
         leadingIcon = { Icon(imageVector = Icons.Filled.Search, contentDescription = null) }
     )
 }
